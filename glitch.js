@@ -34,6 +34,8 @@ let clearButton
 
 let fileInput
 
+let textureImg
+
 
 let rangeSize
 
@@ -46,10 +48,10 @@ function preload(){
 function setup() {
 	
 	createCanvas(windowWidth, windowHeight, WEBGL)
+
+	textureImg = createImage(1,1)
 	
-	noSmooth()
-	
-	img.resize(width/2,0)
+	//img.resize(width/2,0)
 	//capture = createCapture(VIDEO)
 	
 	//capture.hide()
@@ -61,7 +63,7 @@ function setup() {
 	  	.parent(guiHolder)
 	 
 	  // use styled div as label 
-	  createDiv('3D GLITCHER') 
+	  createDiv('GLITCHEROO') 
 	    .parent(guiHolder) // place inside gui div 
 	    .class('label') // class for CSS
 	
@@ -109,7 +111,6 @@ function setup() {
 
 	//load the glitched image
 	glitchSample()
-
 
 	//rotation
 	fill(255)
@@ -200,6 +201,7 @@ function setup() {
 	}
 
     `) 
+
 }
 
 function draw() {
@@ -207,25 +209,40 @@ function draw() {
 	background(0)
 
 	rangeSize = slideRangeSize.value()
-	
-	glitchScreen()
+
+	if (glitch.image){
+		image(glitch.image, -width/2, -height/2); // display glitched image
+	}
+
 	Shape3D()
 
 	if (mousePressed) {
 		selectFunction()
 	}
 
+	if (randombytes == true) {
+
+		glitchScreen()
+
+	}
+
 }
 
 function glitchSample(){
 
-	let getter = img.get(20,0,width/2,height)
+	let getter
+	
+	if (mousePressed){
+		getter = img.get(20,0,width/2,height)
+	}
 
 	//GLITCH!!!
-	
+	//noSmooth()
 	//load the image and the type
 	glitch.loadType("jpg")
 	glitch.loadImage(getter)
+
+	glitchScreen()
 
 }
 
@@ -255,9 +272,11 @@ function glitchScreen() {
 	let randomByte1 = inputByte1.value()
 	let randomByte2 = inputByte2.value()
 
+	inputByte1.changed(glitchSample)
+	inputByte2.changed(glitchSample)
 
 	//the actual glitching
-	glitch.resetBytes(3)
+	glitch.resetBytes()
 	glitch.replaceBytes(randomByte1, randomByte2); // find + replace all
 	
 	if (randombytes == true){
@@ -266,7 +285,11 @@ function glitchScreen() {
 	
 	//build and display image
 	glitch.buildImage(); // creates image from glitched data
-	image(glitch.image, -width/2, -height/2); // display glitched image
+	
+	if(textureImg == undefined){
+	textureImg  = glitch.image.get(0,0,rangeSize,rangeSize)
+	}
+
 }
 
 function Shape3D(){
@@ -280,11 +303,14 @@ function Shape3D(){
 		if (mouseIsPressed) {	
 				positionX = mouseX - rangeSize/2
 				positionY = mouseY - rangeSize/2
+
+				textureImg  = glitch.image.get(positionX,positionY,rangeSize,rangeSize)
+
 		}
 	}
-	
-	let textureImg = glitch.image.get(positionX,positionY,rangeSize,rangeSize)
-	
+
+	slideRangeSize.changed(function(){ textureImg = glitch.image.get(positionX,positionY,rangeSize,rangeSize) })
+
 	push()
 	noStroke()
 	texture(textureImg)
@@ -340,18 +366,13 @@ class Selection {
 		this.y = y
 		this.rangeSize = rangeSize
 		
-		this.selectionRange = glitch.image.get(positionX-rangeSize/2,positionY-rangeSize/2,this.rangeSize,this.rangeSize)
-		
+		if (mousePressed){
+		this.selectionRange = glitch.image.get(positionX,positionY,this.rangeSize,this.rangeSize)
+		}
+
 		this.previewSize = 200
 		this.archiveSize = 100
 
-		// 🔥 create DOM element
-		let dataURL = this.selectionRange.canvas.toDataURL();
-
-		this.domImg = createImg(dataURL);
-		this.domImg.size(this.archiveSize, this.archiveSize);
-		this.domImg.parent(guiHolder);
-		this.domImg.class('button'); // optional styling
 	}
 	
 	show(){
@@ -387,8 +408,6 @@ function selectFunction(){
 
 	selection = new Selection()
 	
-	print(selections.length)
-
 	for(let s of selections){
 		
 			s.show()
