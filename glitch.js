@@ -434,7 +434,8 @@ var DrawingBoard = function(b,g) {
 
 	myPicker.changed(function(){b.background(myPicker.value())})
 
-	clearSketch.mousePressed(function(){b.background(0)})
+	clearSketch.mousePressed(function(){b.background(myPicker.value()); g.clear()})
+
 	saveSketch.mousePressed(function(){b.save(myDrawing,'myDrawing.jpg')})
 
 
