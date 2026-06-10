@@ -635,20 +635,20 @@ function setup() {
 
 	} else { 
 
-		selectX = 10
-		selectY = 10
-		drawingX = 500
+		selectX = 666
+		selectY = 70
+		drawingX = 10
 		drawingY = 10
-		patternsX = 650
+		patternsX = 665
 		patternsY = 10
-		previewX = 300
-		previewY = 300
+		previewX = 350
+		previewY = 70
 
 
 	 }
 
-	patternsIsMinimized = getItem('patternsIsMinimized') ?? false
-	drawingIsMinimized  = getItem('drawingIsMinimized') ?? false
+	patternsIsMinimized = getItem('patternsIsMinimized') ?? true
+	drawingIsMinimized  = getItem('drawingIsMinimized') ?? true
 	selectIsMinimized   = getItem('selectIsMinimized') ?? false
 	previewIsMinimized  = getItem('previewIsMinimized') ?? false
 
