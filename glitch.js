@@ -1382,6 +1382,7 @@ function grabArchive(){
 				tempImg.parent()
 				loadImage(entry.image, function(img){
 					textureImg = img
+					updateFavicon(textureImg)
 				})
 
 			})
