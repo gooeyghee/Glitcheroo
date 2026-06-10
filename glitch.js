@@ -323,6 +323,7 @@ var Select3D = function(s) {
 		s.rectOriginX = s.mouseX - s.offX //- abs(s.mouseX - s.rectOriginX)
 		s.rectOriginY = s.mouseY - s.offY//- abs(s.mouseY - s.rectOriginY)
 		textureImg  = s.glitch.image.get(s.rectOriginX,s.rectOriginY,s.rectSizeX,s.rectSizeX)
+		updateFavicon(textureImg)
 
 		return false
 	}
@@ -341,6 +342,7 @@ var Select3D = function(s) {
 	}
 
 	textureImg  = s.glitch.image.get(s.positionX,s.positionY,s.rangeSize,s.rangeSize)
+	updateFavicon(textureImg)
 	}
 
 	s.glitchSample = function(){
@@ -1409,4 +1411,19 @@ function mouseDragged(){
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function updateFavicon(textureImg) {
+
+  // Find existing favicon link or create one
+  let favicon = document.querySelector("link[rel='icon']");
+
+  if (!favicon) {
+    favicon = document.createElement("link");
+    favicon.rel = "icon";
+    document.head.appendChild(favicon);
+  }
+
+  // Convert p5.Image canvas to a data URL
+  favicon.href = textureImg.canvas.toDataURL("image/png");
 }
